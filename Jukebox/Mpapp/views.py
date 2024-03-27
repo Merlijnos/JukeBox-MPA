@@ -4,7 +4,7 @@ from .forms import LoginForm, RegisterForm
 from .models import Playlist, Song
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
-from .spotify import get_auth_token, get_playlist
+from .spotify import get_auth_token, get_playlist, get_track
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from urllib.parse import urlparse, parse_qs
@@ -56,7 +56,8 @@ def song_list(request, genre_id):
 
 @login_required
 def song_detail(request, song_id):
-    song = get_object_or_404(Song, id=song_id)
+    auth_token = get_auth_token()
+    song = get_track(song_id, auth_token)
     return render(request, 'Mpapp/song_detail.html', {'song': song})
 
 @login_required

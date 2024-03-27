@@ -26,3 +26,11 @@ def get_playlist(playlist_id, auth_token):
     r = requests.get(f"https://api.spotify.com/v1/playlists/{playlist_id}", headers=headers)
     data = r.json()
     return data
+
+def get_track(track_id, auth_token):
+    headers = {
+        "Authorization": f"Bearer {auth_token}"
+    }
+    r = requests.get(f"https://api.spotify.com/v1/tracks/{track_id}", headers=headers)
+    data = r.json()
+    return data

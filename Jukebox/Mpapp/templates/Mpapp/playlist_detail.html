@@ -1,9 +1,11 @@
-{% load static mpapp_extras %}
+{% load static %}
+{% load mpapp_extras %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{{ playlist.name }}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
 </head>
 <body id="playlist-detail-page">
     <div class="playlist-content">
@@ -18,6 +20,7 @@
                     <th>Title</th>
                     <th>Album</th>
                     <th>Duration</th>
+                    <th>Play</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,17 +31,64 @@
                             <div class="song-info">
                                 <img src="{{ song.track.album.images.0.url }}" alt="{{ song.track.name }} image" class="song-image">
                                 <div>
-                                    <p class="song-title">{{ song.track.name }}</p>
+                                    <a href="{{ song.track.external_urls.spotify }}" target="_blank">{{ song.track.name }}</a>
                                     <p class="song-artist">{{ song.track.artists.0.name }}</p>
                                 </div>
                             </div>
                         </td>
                         <td>{{ song.track.album.name }}</td>
                         <td>{{ song.track.duration_ms|to_minutes }}</td>
+                        <td>
+                            <audio id="audio_{{ song.track.id }}">
+                                <source src="{{ song.track.preview_url }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <button onclick="playSong('{{ song.track.id }}')">Play</button>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+    <script>
+        let player = null;
+        let deviceId = null;
+
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            const token = 'BQDgDXZ18d_hC5R-M93yo94kwM1SETwppvIayI_Y6yToe0VeY9H1U_AF6zaiYSL9EmHvNrBoW2YJ6aNhNx6vTZr7mSRaIGFkjf_KPcBGy2lvI8TrDcox1VKcEZwax33ecNt3mlRkfbAW9udAlA8IKG9nZLr0oVmFl4TFgR4vkbSmCmuPjesbc-tn9NBvp8oSDGI5j0V1P7d1yACukw\n'; // Your Spotify access token
+            player = new Spotify.Player({
+                name: 'Web Playback SDK Template',
+                getOAuthToken: cb => { cb(token); }
+            });
+
+            // Error handling
+            player.addListener('initialization_error', ({ message }) => { console.error(message); });
+            player.addListener('authentication_error', ({ message }) => { console.error(message); });
+            player.addListener('account_error', ({ message }) => { console.error(message); });
+            player.addListener('playback_error', ({ message }) => { console.error(message); });
+
+            // Playback status updates
+            player.addListener('player_state_changed', state => { console.log(state); });
+
+            // Ready
+            player.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
+            });
+
+            // Not Ready
+            player.addListener('not_ready', ({ device_id }) => {
+                console.log('Device ID has gone offline', device_id);
+            });
+
+            // Connect to the player!
+            player.connect();
+        };
+
+        function playSong(trackId) {
+            var audioElement = document.getElementById('audio_' + trackId);
+            audioElement.play();
+        }
+    </script>
 </body>
 </html>

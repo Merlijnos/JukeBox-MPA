@@ -17,10 +17,6 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
-    from Mpapp.models import Genre
-    new_genre = Genre(name="New Genre")
-    new_genre.save()
-
 
 if __name__ == '__main__':
     main()

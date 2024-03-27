@@ -6,9 +6,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
 </head>
 <body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'playlist_view' %}">Playlist</a></li>
+            <li><a href="{% url 'login' %}">Login Page</a></li>
+        </ul>
+    </nav>
     <h1>Welcome to the Home Page!</h1>
-        <button class="login-button">
-            <a href="{% url 'login' %}">Logout</a>
-        </button>
 </body>
 </html>
