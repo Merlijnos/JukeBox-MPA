@@ -1,4 +1,4 @@
-{% load static %}
+{% load static mpapp_extras %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,7 +34,7 @@
                             </div>
                         </td>
                         <td>{{ song.track.album.name }}</td>
-                        <td>{{ song.track.duration_ms }}</td>
+                        <td>{{ song.track.duration_ms|to_minutes }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
