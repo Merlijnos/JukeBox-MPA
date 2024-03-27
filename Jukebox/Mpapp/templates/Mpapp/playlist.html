@@ -1,0 +1,16 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlist Search</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
+</head>
+<body>
+    <h1>Search for a Spotify Playlist</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="spotify_link" placeholder="Enter Spotify playlist link">
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Detail</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
+</head>
+<body class="song-detail-page">
+    <h1>{{ song.title }}</h1>
+    <p>Artist: {{ song.artist }}</p>
+    <p>Genre: {{ song.genre.name }}</p>
+    <p>Duration: {{ song.duration }}</p>
+</body>
+</html>

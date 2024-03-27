@@ -1,0 +1,44 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ playlist.name }}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
+</head>
+<body id="playlist-detail-page">
+    <div class="playlist-content">
+        <div class="playlist-header">
+            <img class="playlist-image" src="{{ playlist.images.0.url }}" alt="{{ playlist.name }} image">
+            <h1>{{ playlist.name }}</h1>
+        </div>
+        <table class="song-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Album</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for song in playlist.tracks.items %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <div class="song-info">
+                                <img src="{{ song.track.album.images.0.url }}" alt="{{ song.track.name }} image" class="song-image">
+                                <div>
+                                    <p class="song-title">{{ song.track.name }}</p>
+                                    <p class="song-artist">{{ song.track.artists.0.name }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ song.track.album.name }}</td>
+                        <td>{{ song.track.duration_ms }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

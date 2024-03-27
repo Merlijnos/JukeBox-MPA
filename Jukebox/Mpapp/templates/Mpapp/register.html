@@ -1,0 +1,21 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
+</head>
+<body>
+    <div class="register-box">
+        <h2>Register</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Register</button>
+        </form>
+        <button class="login-button">
+            <a href="{% url 'login' %}">Login</a>
+        </button>
+    </div>
+</body>
+</html>
