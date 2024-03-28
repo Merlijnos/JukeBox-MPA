@@ -1,13 +1,13 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
-from .views import login_view, register, home_view, LogoutViewGet
+from .views import register, home_view, login_view, logout_view
 
 urlpatterns = [
-    path('home/', home_view, name='home'),
+    path('', home_view, name='home'),
     path('register/', register, name='register'),
     path('login/', login_view, name='login'),
-    path('logout/', LogoutViewGet.as_view(), name='logout'),
+    path('logout/', logout_view, name='logout'),
     path('songs/<str:song_id>/', views.song_detail, name='song_detail'),
     path('song_detail/', views.all_songs, name='all_songs'),
     path('playlist/', views.playlist_view, name='playlist_view'),

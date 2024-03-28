@@ -9,15 +9,6 @@ body {
     color: #f0f0f0;
 }
 
-.login-box {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-    width: 300px;
-    text-align: center;
-}
-
 h1, h2 {
     color: #333;
 }
@@ -40,18 +31,50 @@ button {
     cursor: pointer;
 }
 
-.register-button a {
-    color: white;
-    text-decoration: none;
-}
-
-.register-box {
-    background-color: white;
+.login-box, .register-box {
+    background-color: #191414;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     width: 300px;
     text-align: center;
+    color: #f0f0f0;
+}
+
+.login-box h2, .register-box h2 {
+    color: #f0f0f0;
+}
+
+.login-box button, .register-box button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add transition effects */
+    border-radius: 10px; /* Add smooth borders */
+}
+
+.login-box button:hover, .register-box button:hover {
+    background-color: #4CAF50; /* Change this to the color you want */
+    box-shadow: 0px 0px 10px 3px rgb(76, 175, 80); /* Add glow effect */
+    border-radius: 10px;
+}
+
+.login-box input[type=email], .login-box input[type=text], .login-box input[type=password], .register-box input[type=email], .register-box input[type=text], .register-box input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 40px; /* Adjust as needed */
+    background-color: #333;
+    color: #f0f0f0;
 }
 
 input[type=email] {
@@ -81,7 +104,7 @@ button, input[type=text], input[type=password], input[type=email] {
     top: 0;
     width: 100%;
     background-color: #191414;
-    padding: 20px;
+    padding: 10px;
     border-bottom: 1px solid #333;
     z-index: 1;
 }
@@ -107,10 +130,41 @@ body {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add transition effects */
+    border-radius: 10px; /* Add smooth borders */
 }
 
 .navbar li a:hover {
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Change this to the color you want */
+    box-shadow: 0px 0px 10px 3px rgb(76, 175, 80); /* Add glow effect */
+    border-radius: 10px;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: auto;
+    width: 100%;
+}
+
+.search-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-container button {
+    margin-top: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add transition effects */
+    border-radius: 10px; /* Add smooth borders */
+}
+
+.search-container button:hover {
+    background-color: #4CAF50; /* Change this to the color you want */
+    box-shadow: 0px 0px 10px 3px rgb(76, 175, 80); /* Add glow effect */
+    border-radius: 10px;
 }
 
 .song-grid {

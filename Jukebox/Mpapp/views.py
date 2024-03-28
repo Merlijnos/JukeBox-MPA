@@ -1,15 +1,25 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import LoginForm, RegisterForm
 from .models import Playlist, Song
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LoginView, LogoutView
 from .spotify import get_auth_token, get_playlist, get_track
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from urllib.parse import urlparse, parse_qs
 
-@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+@login_required(login_url='login')
+def home_view(request):
+    auth_token = get_auth_token()
+    playlists = get_playlist(request.user.username, auth_token)
+    return render(request, 'Mpapp/home.html', {'playlists': playlists})
+
+@login_required(login_url='login')
 def playlist_view(request):
     if request.method == 'POST':
         spotify_link = request.POST.get('spotify_link')
@@ -19,20 +29,11 @@ def playlist_view(request):
     else:
         return render(request, 'Mpapp/playlist.html')
 
-class LogoutViewGet(LogoutView):
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
-
-@login_required
-def home_view(request):
-    auth_token = get_auth_token()
-    playlists = get_playlist(request.user.username, auth_token)
-    return render(request, 'Mpapp/home.html', {'playlists': playlists})
-
-@login_required
+@login_required(login_url='login')
 def playlist_detail_view(request, playlist_id):
     auth_token = get_auth_token()
     playlist = get_playlist(playlist_id, auth_token)
+    total_duration = 0
     for song in playlist['tracks']['items']:
         # Access the album's images
         album_images = song['track']['album']['images']
@@ -41,26 +42,24 @@ def playlist_detail_view(request, playlist_id):
             # Get the URL of the first image
             image_url = album_images[0]['url']
             print(image_url)
-    return render(request, 'Mpapp/playlist_detail.html', {'playlist': playlist})
+        # Add the duration of the song to the total duration
+        total_duration += song['track']['duration_ms']
+    # Convert total_duration from milliseconds to minutes and seconds
+    total_duration = total_duration // 60000, (total_duration % 60000) // 1000
+    return render(request, 'Mpapp/playlist_detail.html', {'playlist': playlist, 'total_duration': total_duration})
 
-@login_required
+@login_required(login_url='login')
 def all_songs(request):
     songs = Song.objects.all()
     return render(request, 'Mpapp/all_songs.html', {'songs': songs})
 
-@login_required
-def song_list(request, genre_id):
-    genre = get_object_or_404(Genre, id=genre_id)
-    songs = Song.objects.filter(genre=genre)
-    return render(request, 'Mpapp/songs.html', {'songs': songs})
-
-@login_required
+@login_required(login_url='login')
 def song_detail(request, song_id):
     auth_token = get_auth_token()
     song = get_track(song_id, auth_token)
     return render(request, 'Mpapp/song_detail.html', {'song': song})
 
-@login_required
+@login_required(login_url='login')
 def create_playlist(request):
     new_playlist = Playlist(name="My Playlist")
     new_playlist.save()
@@ -73,6 +72,7 @@ def create_playlist(request):
     new_playlist.songs.add(song1, song2)
 
     return redirect('playlist_detail_view', playlist_id=new_playlist.id)
+
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)

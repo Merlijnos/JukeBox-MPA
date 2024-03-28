@@ -2,6 +2,14 @@
 {% load mpapp_extras %}
 <html lang="en">
 <head>
+    <nav class="navbar">
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'playlist_view' %}">Playlist</a></li>
+            <li><a href="{% url 'login' %}">Login Page</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
     <meta charset="UTF-8">
     <title>{{ playlist.name }}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
@@ -12,6 +20,7 @@
         <div class="playlist-header">
             <img class="playlist-image" src="{{ playlist.images.0.url }}" alt="{{ playlist.name }} image">
             <h1>{{ playlist.name }}</h1>
+            <p style="color: #f0f0f0; font-size: 1.2em; text-align: center;">Total duration: {{ total_duration.0 }} minutes and {{ total_duration.1 }} seconds</p>
         </div>
         <table class="song-table">
             <thead>

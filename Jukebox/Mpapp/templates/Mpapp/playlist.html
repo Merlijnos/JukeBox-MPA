@@ -6,11 +6,21 @@
     <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
 </head>
 <body>
-    <h1>Search for a Spotify Playlist</h1>
-    <form method="post">
-        {% csrf_token %}
-        <input type="text" name="spotify_link" placeholder="Enter Spotify playlist link">
-        <button type="submit">Search</button>
-    </form>
+    <nav class="navbar">
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'playlist_view' %}">Playlist</a></li>
+                <li><a href="{% url 'login' %}">Login Page</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+
+            </ul>
+    </nav>
+    <div class="search-container">
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="spotify_link" placeholder="Enter Spotify playlist link">
+            <button type="submit">Search</button>
+        </form>
+    </div>
 </body>
 </html>
