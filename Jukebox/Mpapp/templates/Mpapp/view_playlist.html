@@ -20,7 +20,13 @@
         <h1>{{ playlist.name }}</h1>
         <ul>
             {% for song in playlist.songs.all %}
-                <li>{{ song.title }} by {{ song.artist }}</li>
+                <li>
+                    {{ song.title }} by {{ song.artist }}
+                    <form method="post" action="{% url 'remove_song' playlist.id song.id %}">
+                        {% csrf_token %}
+                        <input type="submit" value="Remove">
+                    </form>
+                </li>
             {% endfor %}
         </ul>
         <form method="post">
