@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Playlist Search</title>
+    <title>All Playlists</title>
     <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
 </head>
 <body>
@@ -16,12 +16,19 @@
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
     </nav>
-    <div class="search-container">
-        <form method="post">
-            {% csrf_token %}
-            <input type="text" name="spotify_link" placeholder="Enter Spotify playlist link">
-            <button type="submit">Search</button>
-        </form>
+    <div class="playlist-content">
+        <div class="playlist-header">
+            <h1>All Playlists</h1>
+        </div>
+            {% for playlist in playlists %}
+                <li>
+                    <a href="{% url 'view_playlist' playlist.id %}">{{ playlist.name }}</a>
+                    <form method="post" action="{% url 'delete_playlist' playlist.id %}">
+                        {% csrf_token %}
+                        <input type="submit" value="Delete">
+                    </form>
+                </li>
+            {% endfor %}
     </div>
 </body>
 </html>

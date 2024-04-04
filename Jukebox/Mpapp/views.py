@@ -1,23 +1,37 @@
+from urllib.parse import urlparse
+
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import LoginForm, RegisterForm
-from .models import Playlist, Song
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView, LogoutView
-from .spotify import get_auth_token, get_playlist, get_track
 from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.urls import reverse
-from urllib.parse import urlparse, parse_qs
+from .models import CustomPlaylist, Mpapp_song
+from .forms import LoginForm, RegisterForm
+from .spotify import get_auth_token, get_playlist, get_track
+
 
 def logout_view(request):
     logout(request)
     return redirect('login')
+
 
 @login_required(login_url='login')
 def home_view(request):
     auth_token = get_auth_token()
     playlists = get_playlist(request.user.username, auth_token)
     return render(request, 'Mpapp/home.html', {'playlists': playlists})
+
+@login_required(login_url='login')
+def view_all_playlists(request):
+    playlists = CustomPlaylist.objects.all()
+    return render(request, 'Mpapp/all_playlists.html', {'playlists': playlists})
+
+@login_required(login_url='login')
+def delete_playlist(request, playlist_id):
+    playlist = CustomPlaylist.objects.get(id=playlist_id)
+    if request.user == playlist.user:
+        playlist.delete()
+    return redirect('all_playlists')
 
 @login_required(login_url='login')
 def playlist_view(request):
@@ -28,6 +42,7 @@ def playlist_view(request):
         return HttpResponseRedirect(reverse('playlist_detail_view', args=[playlist_id]))
     else:
         return render(request, 'Mpapp/playlist.html')
+
 
 @login_required(login_url='login')
 def playlist_detail_view(request, playlist_id):
@@ -49,29 +64,67 @@ def playlist_detail_view(request, playlist_id):
     return render(request, 'Mpapp/playlist_detail.html', {'playlist': playlist, 'total_duration': total_duration})
 
 @login_required(login_url='login')
-def all_songs(request):
-    songs = Song.objects.all()
-    return render(request, 'Mpapp/all_songs.html', {'songs': songs})
-
-@login_required(login_url='login')
-def song_detail(request, song_id):
-    auth_token = get_auth_token()
-    song = get_track(song_id, auth_token)
-    return render(request, 'Mpapp/song_detail.html', {'song': song})
-
-@login_required(login_url='login')
 def create_playlist(request):
-    new_playlist = Playlist(name="My Playlist")
-    new_playlist.save()
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        spotify_ids = request.POST.getlist('spotify_ids')  # Get list of Spotify song IDs from the form
+        playlist = CustomPlaylist.objects.create(name=name, user=request.user)
+        auth_token = get_auth_token()
+        for spotify_id in spotify_ids:
+            track_data = get_track(spotify_id, auth_token)
+            song, created = Mpapp_song.objects.get_or_create(
+                spotify_id=spotify_id,
+                defaults={
+                    'title': track_data['name'],
+                    'artist': track_data['artists'][0]['name']
+                }
+            )
+            playlist.songs.add(song)  # Add the song to the playlist
+        return redirect('view_playlist', playlist_id=playlist.id)  # Redirect to view_playlist view
+    return render(request, 'Mpapp/create_playlist.html')
 
-    song1 = Song(title="Song 1", artist="Artist 1")
-    song1.save()
-    song2 = Song(title="Song 2", artist="Artist 2")
-    song2.save()
+@login_required(login_url='login')
+def view_playlist(request, playlist_id):
+    playlist = CustomPlaylist.objects.get(id=playlist_id)
+    if request.method == 'POST':
+        spotify_id = request.POST.get('spotify_id')
+        auth_token = get_auth_token()
+        track_data = get_track(spotify_id, auth_token)
+        song, created = Mpapp_song.objects.get_or_create(
+            spotify_id=spotify_id,
+            defaults={
+                'title': track_data['name'],
+                'artist': track_data['artists'][0]['name']
+            }
+        )
+        playlist.songs.add(song)
+        return redirect('view_playlist', playlist_id=playlist.id)
+    return render(request, 'Mpapp/view_playlist.html', {'playlist': playlist})
 
-    new_playlist.songs.add(song1, song2)
+@login_required(login_url='login')
+def add_song(request, playlist_id):
+    if request.method == 'POST':
+        spotify_id = request.POST.get('spotify_id')
+        auth_token = get_auth_token()
+        track_data = get_track(spotify_id, auth_token)
+        song, created = Mpapp_song.objects.get_or_create(
+            spotify_id=spotify_id,
+            defaults={
+                'title': track_data['name'],
+                'artist': track_data['artists'][0]['name']
+            }
+        )
+        playlist = CustomPlaylist.objects.get(id=playlist_id)
+        playlist.songs.add(song)
+        return redirect('view_playlist', playlist_id=playlist.id)
+    return render(request, 'Mpapp/add_song.html')
 
-    return redirect('playlist_detail_view', playlist_id=new_playlist.id)
+@login_required(login_url='login')
+def remove_song(request, playlist_id, song_id):
+    playlist = CustomPlaylist.objects.get(id=playlist_id)
+    song = Mpapp_song.objects.get(id=song_id)
+    playlist.songs.remove(song)
+    return redirect('view_playlist', playlist_id=playlist.id)
 
 def login_view(request):
     if request.method == 'POST':
@@ -84,6 +137,7 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, 'Mpapp/login.html', {'form': form})
+
 
 def register(request):
     if request.method == 'POST':

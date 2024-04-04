@@ -369,6 +369,38 @@ body {
     padding: 24px;
 }
 
+/* Styles for All Playlists Page */
+
+.all-playlists-page {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.all-playlists-page h1 {
+    color: #333;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.all-playlists-page .playlist-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+
+.all-playlists-page .playlist-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #4CAF50;
+    border-radius: 5px;
+}
+
+.all-playlists-page .playlist-item a {
+    color: #333;
+    text-decoration: none;
+}
+
 @media screen and (max-width: 600px) {
     #playlist-detail-page {
         font-size: 14px;

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Playlist Search</title>
+    <title>View Playlist</title>
     <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
 </head>
 <body>
@@ -16,11 +16,17 @@
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
     </nav>
-    <div class="search-container">
+    <div class="playlist-content">
+        <h1>{{ playlist.name }}</h1>
+        <ul>
+            {% for song in playlist.songs.all %}
+                <li>{{ song.title }} by {{ song.artist }}</li>
+            {% endfor %}
+        </ul>
         <form method="post">
             {% csrf_token %}
-            <input type="text" name="spotify_link" placeholder="Enter Spotify playlist link">
-            <button type="submit">Search</button>
+            <input type="text" name="spotify_id" placeholder="Enter Spotify song ID">
+            <button type="submit">Add Song</button>
         </form>
     </div>
 </body>

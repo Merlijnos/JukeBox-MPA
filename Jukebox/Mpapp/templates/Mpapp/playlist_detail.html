@@ -5,7 +5,9 @@
     <nav class="navbar">
         <ul>
             <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'playlist_view' %}">Playlist</a></li>
+            <li><a href="{% url 'playlist_view' %}">Search Playlist</a></li>
+            <li><a href="{% url 'create_playlist' %}">Create Playlist</a></li>
+            <li><a href="{% url 'all_playlists' %}">All Playlists</a></li>
             <li><a href="{% url 'login' %}">Login Page</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
@@ -63,6 +65,7 @@
     <script>
         let player = null;
         let deviceId = null;
+        let currentAudio = null;
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             const token = 'BQDgDXZ18d_hC5R-M93yo94kwM1SETwppvIayI_Y6yToe0VeY9H1U_AF6zaiYSL9EmHvNrBoW2YJ6aNhNx6vTZr7mSRaIGFkjf_KPcBGy2lvI8TrDcox1VKcEZwax33ecNt3mlRkfbAW9udAlA8IKG9nZLr0oVmFl4TFgR4vkbSmCmuPjesbc-tn9NBvp8oSDGI5j0V1P7d1yACukw\n'; // Your Spotify access token
@@ -95,8 +98,17 @@
         };
 
         function playSong(trackId) {
+            // If there is a song currently playing, pause it
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            // Play the new song
             var audioElement = document.getElementById('audio_' + trackId);
             audioElement.play();
+
+            // Update the currently playing song
+            currentAudio = audioElement;
         }
     </script>
 </body>

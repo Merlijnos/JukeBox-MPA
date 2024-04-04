@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Playlist Search</title>
+    <title>Create Playlist</title>
     <link rel="stylesheet" type="text/css" href="{% static 'Mpapp/styles.css' %}">
 </head>
 <body>
@@ -19,8 +19,8 @@
     <div class="search-container">
         <form method="post">
             {% csrf_token %}
-            <input type="text" name="spotify_link" placeholder="Enter Spotify playlist link">
-            <button type="submit">Search</button>
+            <input type="text" name="name" placeholder="Enter playlist name">
+            <button type="submit">Create Playlist</button>
         </form>
     </div>
 </body>

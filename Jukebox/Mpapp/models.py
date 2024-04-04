@@ -1,15 +1,22 @@
 from django.db import models
-import datetime
+from django.contrib.auth.models import User
 
-class Genre(models.Model):
-    name = models.CharField(max_length=100)
 
-class Song(models.Model):
+class Mpapp_song(models.Model):
     title = models.CharField(max_length=200)
     artist = models.CharField(max_length=100)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, default=1)
-    duration = models.DurationField(default=datetime.timedelta(minutes=0))
+    spotify_id = models.CharField(max_length=200, default='default_value')
 
-class Playlist(models.Model):
-    name = models.CharField(max_length=100)
-    songs = models.ManyToManyField(Song)
+
+class CustomPlaylist(models.Model):
+    objects = None
+    name = models.CharField(max_length=200)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    songs = models.ManyToManyField('Mpapp_song')
+
+    class Meta:
+        db_table = 'Mpapp_customplaylist'
+        verbose_name = 'Custom Playlist'
+
+    def __str__(self):
+        return self.name
